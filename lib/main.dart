@@ -6,7 +6,7 @@ void main() {
     title: "Simple Intrest Application",
     home: SIForm(),
     theme: ThemeData(
-      primaryColor: Colors.red[900],
+      primaryColor: Colors.red[700],
       accentColor: Colors.redAccent,
     ),
   ));
@@ -61,46 +61,12 @@ class _SIFormState extends State<SIForm> {
                   Padding(
                     padding: EdgeInsets.only(
                         top: _minimumPadding, bottom: _minimumPadding),
-                    child: TextFormField(
-                      style: _textStyle,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          labelText: "Principle",
-                          hintText: "enter the priciple amount eg. 1000",
-                          errorStyle: _errorStyle,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0))),
-                      controller: principleTextController,
-                      validator: (String inputValue) {
-                        if (inputValue.isEmpty) {
-                          return "Please enter valid priciple amount";
-                        } else if (!_isPositiveNumber(inputValue)) {
-                          return "Please enter valid priciple amount";
-                        }
-                      },
-                    ),
+                    child: buildPrincipleTextFormField(_textStyle, _errorStyle),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
                         top: _minimumPadding, bottom: _minimumPadding),
-                    child: TextFormField(
-                      style: _textStyle,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          labelText: "Rate of interest",
-                          hintText: "Enter in percentage",
-                          errorStyle: _errorStyle,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0))),
-                      controller: roiTextController,
-                      validator: (String inputValue) {
-                        if (inputValue.isEmpty) {
-                          return "Please enter valid ROI";
-                        } else if (!_isPositiveNumber(inputValue)) {
-                          return "Please enter valid ROI";
-                        }
-                      },
-                    ),
+                    child: buildROITextFormField(_textStyle, _errorStyle),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -108,46 +74,12 @@ class _SIFormState extends State<SIForm> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                            child: TextFormField(
-                          style: _textStyle,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              labelText: "Term",
-                              hintText: "enter period in years",
-                              errorStyle: _errorStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0))),
-                          controller: termTextController,
-                          validator: (String inputValue) {
-                            if (inputValue.isEmpty) {
-                              return "Please enter valid term";
-                            } else if (!_isPositiveNumber(inputValue)) {
-                              return "Please enter valid term";
-                            }
-                          },
-                        )),
+                            child: buildTermTextFormField(
+                                _textStyle, _errorStyle)),
                         Container(
                           width: _minimumPadding * 5,
                         ),
-                        Expanded(
-                            child: DropdownButton<String>(
-                          items: _currencies.map(
-                            (String currency) {
-                              return DropdownMenuItem<String>(
-                                child: Text(
-                                  currency,
-                                  style: _textStyle,
-                                ),
-                                value: currency,
-                              );
-                            },
-                          ).toList(),
-                          value: _currentCurrency,
-                          style: _textStyle,
-                          onChanged: (String selectedValue) {
-                            _onDropDownChanged(selectedValue);
-                          },
-                        ))
+                        Expanded(child: buildCurrencyDropdownButton(_textStyle))
                       ],
                     ),
                   ),
@@ -167,6 +99,90 @@ class _SIFormState extends State<SIForm> {
                 ],
               ),
             )));
+  }
+
+  DropdownButton<String> buildCurrencyDropdownButton(TextStyle _textStyle) {
+    return DropdownButton<String>(
+      items: _currencies.map(
+        (String currency) {
+          return DropdownMenuItem<String>(
+            child: Text(
+              currency,
+              style: _textStyle,
+            ),
+            value: currency,
+          );
+        },
+      ).toList(),
+      value: _currentCurrency,
+      style: _textStyle,
+      onChanged: (String selectedValue) {
+        _onDropDownChanged(selectedValue);
+      },
+    );
+  }
+
+  TextFormField buildTermTextFormField(
+      TextStyle _textStyle, TextStyle _errorStyle) {
+    return TextFormField(
+      style: _textStyle,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+          labelText: "Term",
+          hintText: "enter period in years",
+          errorStyle: _errorStyle,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+      controller: termTextController,
+      validator: (String inputValue) {
+        if (inputValue.isEmpty) {
+          return "Please enter valid term";
+        } else if (!_isPositiveNumber(inputValue)) {
+          return "Please enter valid term";
+        }
+      },
+    );
+  }
+
+  TextFormField buildROITextFormField(
+      TextStyle _textStyle, TextStyle _errorStyle) {
+    return TextFormField(
+      style: _textStyle,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+          labelText: "Rate of interest",
+          hintText: "Enter in percentage",
+          errorStyle: _errorStyle,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+      controller: roiTextController,
+      validator: (String inputValue) {
+        if (inputValue.isEmpty) {
+          return "Please enter valid ROI";
+        } else if (!_isPositiveNumber(inputValue)) {
+          return "Please enter valid ROI";
+        }
+      },
+    );
+  }
+
+  TextFormField buildPrincipleTextFormField(
+      TextStyle _textStyle, TextStyle _errorStyle) {
+    return TextFormField(
+      style: _textStyle,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+          labelText: "Principle",
+          hintText: "enter the priciple amount eg. 1000",
+          errorStyle: _errorStyle,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+      controller: principleTextController,
+      validator: (String inputValue) {
+        if (inputValue.isEmpty) {
+          return "Please enter valid priciple amount";
+        } else if (!_isPositiveNumber(inputValue)) {
+          return "Please enter valid priciple amount";
+        }
+      },
+    );
   }
 
   Row buildButtonRow(BuildContext context, TextStyle _textStyle) {
@@ -225,7 +241,7 @@ class _SIFormState extends State<SIForm> {
       image: assetImage,
       width: 150,
       height: 150,
-      colorBlendMode: BlendMode.luminosity,
+      colorBlendMode: BlendMode.dstIn,
     );
 
     return Container(
